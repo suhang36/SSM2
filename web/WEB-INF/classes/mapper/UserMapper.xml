@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UserMapper">
+
+    <select id="findUser" resultType="hashMap">
+    select * from user
+    </select>
+
+    <!--直接查询全部-->
+    <select id="findStudent" resultType="hashMap">
+        select * from student
+    </select>
+
+    <!--根据一个值查询-->
+    <select id="findUserParameter" parameterType="HashMap" resultType="hashMap">
+    select * from user where name=#{name} and password=#{password}
+    </select>
+
+    <!--根据类返回map-->
+    <select id="findClass" parameterType="entity.User" resultType="hashMap">
+    select * from user where name=#{name} and password=#{password}
+    </select>
+
+    <!--数据映射-->
+    <select id="findClassForUser" parameterType="entity.User" resultType="entity.User">
+    select * from user where name=#{name} and password=#{password}
+    </select>
+
+    <insert id="insertUser" parameterType="entity.User" >
+        INSERT INTO USER (NAME,PASSWORD) VALUES (#{name},#{password})
+    </insert>
+
+    <!-- 插入操作2 -->
+    <insert id="insertUser1" parameterType="entity.User">
+        insert  into user(name,password) values (#{name},#{password});
+    </insert>
+
+    <!--修改操作-->
+    <update id="updateUser" parameterType="entity.User">
+        update  user set name = #{name},password = #{password} where id=#{id}
+    </update>
+    <!-- 删除操作-->
+    <delete id="delUser" parameterType="entity.User" >
+        delete  from  user where name=#{name}
+    </delete>
+
+    <!--关联查询-->
+    <resultMap id="UserResultMap" type="entity.User">
+        <id property="id" column="ID"></id>
+        <result property="name" column="NAME"></result>
+        <result property="password" column="PASSWORD"></result>
+    </resultMap>
+
+    <select id="selectUser" parameterType="entity.User" resultMap="UserResultMap">
+        select * from USER where NAME=#{name}
+    </select>
+
+    <resultMap id="unionFindResultMap" type="entity.Student">
+        <id property="id" column="stu_id"></id>
+        <result property="classes" column="stu_class"></result>
+        <result property="school" column="stu_school"></result>
+        <collection property="users"
+                    javaType="arrayList"
+                    ofType="entity.User"
+                    resultMap="UserResultMap"
+        ></collection>
+    </resultMap>
+
+    <resultMap id="unionFindResultMapOfId" type="entity.Student">
+        <id property="id" column="stu_id"></id>
+        <result property="classes" column="stu_class"></result>
+        <result property="school" column="stu_school"></result>
+        <collection property="users"
+                    javaType="arrayList"
+                    ofType="entity.User"
+                    column="{id=stu_id,classes=stu_class}"
+                    select="selectUser3">
+        </collection>
+
+    </resultMap>
+    <select id="selectUser3"   resultType="entity.User" >
+        select * from user where stu_id = #{id} and stu_class=#{classes}
+    </select>
+
+    <select id="selectStudent3" resultMap="unionFindResultMapOfId" >
+        select * from student where stu_id = #{id}
+    </select>
+
+    <select id="unionUser"  resultMap="unionFindResultMap" >
+        select * from user as u,student as s where u.stu_id = s.stu_id
+    </select>
+
+    <!--动态调用-sql-->
+    <select id="dynamicIfSql" parameterType="entity.User" resultMap="UserResultMap">
+        select * from user
+        <where>
+        <if test="name!=null">and name=#{name}</if>
+        <if test="password!=null">and password=#{password}</if>
+        </where>
+    </select>
+
+    <select id="dynamicIfSql2" parameterType="entity.User" resultMap="UserResultMap">
+        select * from user where
+        <choose>
+            <when test="name!=null">name=#{name}</when>
+            <when test="password!=null">password=#{password}</when>
+            <otherwise>2=2</otherwise>
+        </choose>
+    </select>
+
+    <select id="dynamicIfSql3" parameterType="entity.User" resultMap="UserResultMap">
+        select * from user
+        <trim prefix=" where" prefixOverrides="and" >
+            <if test="name!=null">and name=#{name}</if>
+            <if test="password!=null">and password=#{password}</if>
+        </trim>
+    </select>
+
+    <update id="bynamicUpdateSql" parameterType="entity.User">
+        update user
+        <set>
+            <if test="name!=null">name=#{name},</if>
+            <if test="password!=null">password=#{password},</if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <!--<update id="bynamicUpdateSql" parameterType="entity.User">-->
+        <!--<trim prefix="update user" suffix="where id=#{id}" prefixOverrides=",">-->
+            <!--<if test="name!=null">,name=#{name}</if>-->
+            <!--<if test="password!=null">,password=#{password}</if>-->
+        <!--</trim>-->
+    <!--</update>-->
+
+    <select id="dynamicForEachSql" parameterType="ArrayList" resultMap="UserResultMap">
+        select * from user where id in
+        <foreach collection="list"
+                 open="("
+                 close=")"
+                 index="index"
+                 item="item"
+                 separator=",">
+            #{item}
+        </foreach>
+
+    </select>
+</mapper>
