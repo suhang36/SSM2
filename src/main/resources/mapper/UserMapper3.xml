@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MyImpl.Customer">
+
+    <resultMap id="clazzMap" type="entity.Clazz">
+        <id property="no" column="no"></id>
+        <result property="name" column="name"></result>
+    </resultMap>
+
+    <resultMap id="studentMap2" type="entity.Student2">
+    <id property="no" column="no"></id>
+    <result property="name" column="name"></result>
+    </resultMap>
+    <select id="queryStudent2" parameterType="entity.Student2" resultMap="studentMap2">
+        select * from student2 where no=#{no}
+    </select>
+    <!--子查询-->
+    <resultMap id="studentMap" type="entity.Student2">
+        <id property="no" column="no"></id>
+        <result property="name" column="name"></result>
+        <collection property="clazz"
+                    javaType="entity.Clazz"
+                    column="{no=classno}"
+                    select="queryClazz"
+        >
+        </collection>
+    </resultMap>
+
+    <resultMap id="clazzMap2" type="entity.Clazz">
+        <id property="no" column="no"></id>
+        <result property="name" column="name"></result>
+        <collection property="student2s"
+                    javaType="arrayList"
+                    ofType="entity.Student2"
+                    column="{classno=no}"
+                    select="queryStudentForClassno"
+        ></collection>
+    </resultMap>
+    <select id="queryStudentForClassno" resultMap="studentMap2">
+        select * from student2 where classno=#{classno}
+  </select>
+    <select id="queryStudent" parameterType="entity.Student2" resultMap="studentMap">
+        select * from student2 where no=#{no}
+    </select>
+
+    <select id="queryClazz" parameterType="entity.Clazz" resultMap="clazzMap">
+        select * from clazz where no=#{no}
+    </select>
+
+    <select id="queryClazzAndStudent" parameterType="entity.Clazz" resultMap="clazzMap2">
+        select * from clazz where no=#{no}
+    </select>
+    <!--联合查询区域-->
+    <resultMap id="studentMapForJoint" type="entity.Student2">
+        <id property="no" column="no"></id>
+        <result property="name" column="name"></result>
+        <collection property="clazz"
+                    javaType="entity.Clazz"
+                    resultMap="clazzMap"
+        >
+        </collection>
+    </resultMap>
+    <select id="queryStudentForJoint" parameterType="entity.Student2" resultMap="studentMapForJoint">
+        select * from clazz c,student2 s where s.classno=c.no and s.no=#{no}
+    </select>
+
+    <resultMap id="studentMap3" type="entity.Student2">
+        <id property="no" column="stu_id"></id>
+        <result property="name" column="stu_name"></result>
+    </resultMap>
+
+    <resultMap id="clazzMapForJoint" type="entity.Clazz">
+        <id property="no" column="no"></id>
+        <result property="name" column="name"></result>
+        <collection property="student2s"
+                    javaType="java.util.List"
+                    ofType="entity.Student2"
+                    resultMap="studentMap3"
+        ></collection>
+    </resultMap>
+    <select id="queryClazzForJoint" resultMap="clazzMapForJoint">
+        select c.no,c.name,s.no stu_id,s.name stu_name from clazz c,student2 s where c.no=s.classno and c.no=#{no}
+    </select>
+</mapper>

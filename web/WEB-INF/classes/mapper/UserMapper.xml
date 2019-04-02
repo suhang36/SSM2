@@ -135,7 +135,7 @@
     <!--</update>-->
 
     <select id="dynamicForEachSql" parameterType="ArrayList" resultMap="UserResultMap">
-        select * from user where id in
+        select * from user where id in (1,2)
         <foreach collection="list"
                  open="("
                  close=")"
