@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Dao.StudentDao">
+    <resultMap id="unionFindResultMap" type="entity.Student">
+        <id property="id" column="stu_id"></id>
+        <result property="classes" column="stu_class"></result>
+        <result property="school" column="stu_school"></result>
+    </resultMap>
+    <select id="select" resultMap="unionFindResultMap">
+        select * from student
+    </select>
+</mapper>

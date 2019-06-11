@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+    <context:component-scan base-package="Dao"></context:component-scan>
+    <context:component-scan base-package="Service"></context:component-scan>
+
+    <!--<bean id="user" class="entity.User">-->
+        <!--<property name="id" value="1"></property>-->
+        <!--<property name="name" value="su"></property>-->
+        <!--<property name="password" value="123456"></property>-->
+        <!--<constructor-arg value="su" name="name"></constructor-arg>-->
+        <!--<constructor-arg name="id" value="124"></constructor-arg>-->
+    <!--</bean>-->
+
+    <!--<bean id="user2" class="entity.User">-->
+        <!--<property name="id" value="1"></property>-->
+        <!--<property name="name" value="su"></property>-->
+        <!--<property name="password" value="123456"></property>-->
+        <!--<constructor-arg value="su" name="name"></constructor-arg>-->
+        <!--<constructor-arg name="id" value="124"></constructor-arg>-->
+    <!--</bean>-->
+
+    <!--<bean id="student" class="entity.Student">-->
+        <!--<constructor-arg name="users" >-->
+            <!--<list>-->
+                <!--<ref bean="user2"></ref>-->
+            <!--</list>-->
+        <!--</constructor-arg>-->
+        <!--<property name="id">-->
+            <!--<value>23</value>-->
+
+        <!--</property>-->
+        <!--<property name="classes" value="w"></property>-->
+        <!--<property name="school" value="cqgcxy"></property>-->
+        <!--<property name="users">-->
+            <!--<list>-->
+                <!--<ref bean="user"></ref>-->
+                <!--<ref bean="user2"></ref>-->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!--<bean id="upperOperation" class="Service.impl.UpperOperation"></bean>-->
+    <!--<bean id="lowerOperation" class="Service.impl.LowerOperation"></bean>-->
+    <!---->
+    <!--<bean id="Studnet3" class="entity.Student3">-->
+        <!--<property name="name" value="张兴鹏"></property>-->
+        <!--<property name="birthday" value="1997/09/08"></property>-->
+        <!--<property name="sex" value="1"></property>-->
+        <!--<property name="studyNo" value="169001929"></property>-->
+        <!--<property name="teacher" ref="teacher"></property>-->
+    <!--</bean>-->
+    <!--<bean id="teacher" class="entity.Teacher">-->
+        <!--<property name="sex" value="0"></property>-->
+        <!--<property name="birthday" value="2001/06/10"></property>-->
+        <!--<property name="name" value="li"></property>-->
+        <!--<property name="students">-->
+            <!--<list>-->
+                <!--<ref bean="student"></ref>-->
+                <!--<ref bean="student"></ref>-->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!--<bean id="calculator" class="Service.impl.StudentServiceImpl"></bean>-->
+    <!--<bean id="AsspectJ" class="selection.Validate"></bean>-->
+    <!--<aop:aspectj-autoproxy/>-->
+
+    <!--<aop:config>-->
+        <!--&lt;!&ndash;定义一个切点&ndash;&gt;-->
+        <!--<aop:pointcut id="verifyPointCut" expression="execution(* Service.impl.StudentServiceImpl.*(..))"/>-->
+        <!--&lt;!&ndash;定义一个切面&ndash;&gt;-->
+        <!--<aop:aspect ref="AsspectJ">-->
+            <!--&lt;!&ndash;method通知的方法，pointcut-ref切点&ndash;&gt;-->
+            <!--<aop:around method="run" pointcut-ref="verifyPointCut"/>-->
+        <!--</aop:aspect>-->
+    <!--</aop:config>-->
+
+    <!--配置properties文件-->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:jdbc.properties"></property>
+    </bean>
+
+    <!--配置数据库-->
+    <bean class="org.apache.commons.dbcp.BasicDataSource" id="dataSource">
+        <property name="driverClassName"  value="${jdbc.driver}"></property>
+        <property name="password" value="${jdbc.password}"></property>
+        <property name="url" value="${jdbc.url}"></property>
+        <property name="username" value="${jdbc.username}"></property>
+    </bean>
+
+    <!--创建sqlseeionFactory-->
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sessionFactory">
+        <property name="dataSource" ref="dataSource"></property>
+        <property name="mapperLocations" value="classpath:mapper/*.xml"></property>
+    </bean>
+
+    <!--mybatis接口调用-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="Dao"></property>
+        <property name="sqlSessionFactoryBeanName" value="sessionFactory"></property>
+    </bean>
+
+</beans>

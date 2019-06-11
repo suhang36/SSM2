@@ -1,10 +1,11 @@
 package entity;
 
 import java.util.List;
+import java.util.SortedSet;
 
 public class Student {
     private String id;
-    private List<User> users;
+
     private String school;
     private String classes;
 
@@ -12,7 +13,6 @@ public class Student {
     public String toString() {
         return "Student{" +
                 "id='" + id + '\'' +
-                ", users=" + users +
                 ", school='" + school + '\'' +
                 ", classes='" + classes + '\'' +
                 '}';
@@ -24,14 +24,6 @@ public class Student {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
     }
 
     public String getSchool() {

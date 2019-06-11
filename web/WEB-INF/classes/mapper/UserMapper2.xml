@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="java.MyImpl.UserDaoImpl">
+<mapper namespace="Dao.UserDaoImpl">
     <select id="findUser" resultType="hashMap">
     select * from user
     </select>
@@ -11,8 +11,11 @@
         select * from student
     </select>
     <!--根据一个值查询-->
-    <select id="findUserParameter" parameterType="HashMap" resultType="hashMap">
+    <select id="findUserParameter" parameterType="entity.User" resultType="hashMap">
     select * from user where name=#{name} and password=#{password}
+    </select>
+    <select id="findUserParameterWithName" parameterType="entity.User" resultType="hashMap">
+    select * from user where name=#{name}
     </select>
     <!--根据类返回map-->
     <select id="findClass" parameterType="entity.User" resultType="hashMap">
